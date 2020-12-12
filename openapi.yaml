@@ -1,0 +1,122 @@
+openapi: "3.0.0"
+info:
+  description: "This is a simple API made with Go, for the demo presentation."
+  version: "1.0.0"
+  title: "Construct"
+  contact:
+    email: "gealbermorales@gmail.com"
+  license:
+    name: "GPL"
+    url: "https://www.gnu.org/licenses/gpl-3.0.html"
+
+tags:
+- name: "construct"
+  description: "API for the demo"
+
+paths:
+  /login:
+    post:
+      tags: - "construct"
+      summary: "Post request for the login of the user"
+      description: ""
+      requestBody:
+        description: Data of the user to be login
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  minLength: 1
+                  maxLength: 120
+                  description: Email of the user to be registered
+                password:
+                    type: string
+                    minLength: 4
+                    maxLength: 25
+                    description: Password of the user to be login
+              required:              
+                - email
+                - password
+
+              example:              
+                  email: test@email.com
+                  password: EasyPassword
+
+      responses:
+        "200":
+          description: "User logged successfully"
+          headers:
+              Authorization:
+                  description: Authorization token.
+                  schema:
+                      type: string
+                      example: 'Bearer blablbalblbalablabalbalbalb'
+
+        "400":
+          description: "Invalid request"
+         "403":
+             description: "Forbidden to login"
+        "405":
+          description: "Method not allowed"
+
+  /logout:
+      delete:
+        tags: - "construct"
+        summary: "Post request for the logout of the user"
+        description: ""
+        headers:
+          Authorization:
+            description: Authorization token.
+            schema:
+              type: string
+              example: 'Bearer blablbalblbalablabalbalbalb'
+
+        responses:
+          "204":
+            description: "User logout, no content"
+          "400":
+            description: "Invalid request"
+          "405":
+            description: "Method not allowed"
+
+  /register:
+      post:
+        tags: - "construct"
+        summary: "Post request for the registration of the user"
+        description: ""
+        requestBody:
+          description: Data of the user to be registered
+          required: true
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  email:
+                    type: string
+                    minLength: 1
+                    maxLength: 120
+                    description: Email of the user to be registered
+                  password:
+                      type: string
+                      minLength: 4
+                      maxLength: 25
+                      description: Password of the user to be login
+                required:              
+                  - email
+                  - password
+
+                example:              
+                    email: test@email.com
+                    password: EasyPassword
+
+        responses:
+          "201":
+            description: "User registered"
+          "400":
+            description: "Invalid request"
+          "405":
+            description: "Method not allowed"
