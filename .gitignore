@@ -1,4 +1,4 @@
-key_backup/*
+serializer/jwt/key_backup/*
 go.sum
 script/config/dump.rb
 script/config/appendonly.aof
