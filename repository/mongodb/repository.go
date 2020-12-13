@@ -3,6 +3,7 @@ package mongodb
 import (
 	"github.com/Gealber/construct_demo/accounts"
 	"gopkg.in/mgo.v2"
+	"gopkg.in/mgo.v2/bson"
 	"log"
 	"os"
 )
@@ -20,7 +21,7 @@ type MongoRepository struct {
 }
 
 //New creates a new MongoRepository and try to stablish the connection
-func NewMongoRepository() *MongoRepository {
+func NewMongoRepository() (*MongoRepository, error) {
 	url := os.Getenv("MONGO_URL")
 	if url == "" {
 		url = "localhost"
@@ -28,24 +29,37 @@ func NewMongoRepository() *MongoRepository {
 	logger := log.New(os.Stdout, "[MONGODB]", 0)
 	session, err := mgo.Dial(url)
 	if err != nil {
-		logger.Printf("Unable to comunicate %v\n", err)
-		return nil
+		return nil, err
 	}
 	return &MongoRepository{
 		URL:     url,
 		Logger:  logger,
 		Session: session,
-	}
+	}, nil
 }
 
-//Find find the user by the id
-func (r *MongoRepository) Find(id string) (*accounts.User, error) {
+//FindByID find the user by the id
+func (r *MongoRepository) FindByID(id string) (*accounts.User, error) {
 	session := r.Session.Copy()
 	defer session.Close()
 	coll := session.DB(DB_NAME).C("Users")
 
 	user := &accounts.User{}
 	err := coll.FindId(id).One(user)
+	if err != nil {
+		return nil, err
+	}
+	return user, nil
+}
+
+//Find find the user by the the email
+func (r *MongoRepository) Find(email string) (*accounts.User, error) {
+	session := r.Session.Copy()
+	defer session.Close()
+	coll := session.DB(DB_NAME).C("Users")
+
+	user := &accounts.User{}
+	err := coll.Find(bson.M{"email": email}).One(user)
 	if err != nil {
 		return nil, err
 	}
