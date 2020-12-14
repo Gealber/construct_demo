@@ -24,7 +24,7 @@ func initRoutes(mx *mux.Router, formatter *render.Render) {
 	signUpHandlerFunc := http.HandlerFunc(signUpHandler)
 	logoutHandlerFunc := http.HandlerFunc(logoutHandler)
 
-	mx.Handle("/api/signUp", cors(signUpHandlerFunc)).Methods("POST", "OPTIONS")
+	mx.Handle("/api/signup", cors(signUpHandlerFunc)).Methods("POST", "OPTIONS")
 	mx.HandleFunc("/api/login", loginHandler).Methods("POST")
 	mx.Handle("/api/logout", cors(logoutHandlerFunc)).Methods("DELETE", "OPTIONS")
 }

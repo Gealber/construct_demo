@@ -82,7 +82,7 @@ paths:
           "405":
             description: "Method not allowed"
 
-  /register:
+  /signup:
       post:
         tags: - "construct"
         summary: "Post request for the registration of the user"
