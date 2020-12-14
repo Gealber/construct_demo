@@ -1,0 +1,33 @@
+version: '3'
+networks:
+  general:
+    driver: bridge
+
+services:
+  server:
+    build: .
+    networks:
+      - general
+    restart: always
+    ports:
+      - "3000:3000"
+    environment:
+      PRIVATE_KEY_PATH: /app/serializer/jwt/key_backup/id_rsa
+      PUBLIC_KEY_PATH: /app/serializer/jwt/key_backup/id_rsa.pub
+      MONGO_URL: localhost
+      REDIS_URL: redis://localhost:6379/0
+  mongodb:
+    image: mongo:4.2.1-bionic
+    networks:
+      - general
+    restart: always
+  redis:
+    image: redis:6.0-alpine3.11
+    networks:
+      - general
+    restart: always
+    environment:
+      REDIS_URL: redis://localhost:6379/0
+    ports:
+      - "6379:6379"
+
