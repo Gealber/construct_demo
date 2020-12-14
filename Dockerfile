@@ -19,7 +19,5 @@ FROM alpine:3.11.5
 WORKDIR /app/
 
 COPY --from=builder /app/ .
-ENV PRIVATE_KEY_PATH /app/serializer/jwt/key_backup/id_rsa
-ENV PUBLIC_KEY_PATH /app/serializer/jwt/key_backup/id_rsa.pub
 
 CMD ["./server" ]
