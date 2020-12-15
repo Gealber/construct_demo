@@ -12,7 +12,7 @@ generate_vendor: ; @go mod vendor
 
 .PHONY: build
 build:
-	@docker image build -t gealber/construct_demo .
+	@docker image build --rm -t gealber/construct_demo .
 
 .PHONY: down
 down:
@@ -22,6 +22,8 @@ down:
 ps:
 	@docker-compose ps
 
+
 .PHONY: clean
 clean:
-	@rm -r vendor
+	@$(RM) -r vendor
+	@docker rmi $(shell docker images -f dangling=true -q --no-trunc)
