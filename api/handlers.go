@@ -13,6 +13,13 @@ import (
 )
 
 func signUpHandler(w http.ResponseWriter, r *http.Request) {
+	defer func() {
+		if err, ok := recover().(error); ok {
+			w.WriteHeader(http.StatusInternalServerError)
+			fmt.Fprintf(w, "Error: %v", err)
+		}
+	}()
+
 	user := decodeUserBodyReq(r)
 	if user == nil {
 		w.WriteHeader(http.StatusBadRequest)
@@ -25,20 +32,30 @@ func signUpHandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		w.WriteHeader(http.StatusNotFound)
 		fmt.Fprintf(w, "Unable to connect to MONGODB: %v", err)
-		mongoRepo.Logger.Printf("Unable to connect to MONGODB: %v", err)
 		return
 	}
+
 	err = mongoRepo.Store(user)
 	if err != nil {
 		mongoRepo.Logger.Printf("Unable to store error: %v", err)
+		w.WriteHeader(http.StatusInternalServerError)
+		fmt.Fprintf(w, "Unable to store user to MONGODB: %v", err)
+		return
 	}
 	w.WriteHeader(http.StatusCreated)
 }
 
 func loginHandler(w http.ResponseWriter, r *http.Request) {
+	defer func() {
+		if err, ok := recover().(error); ok {
+			w.WriteHeader(http.StatusInternalServerError)
+			fmt.Fprintf(w, "Error: %v", err)
+		}
+	}()
+
 	if r.Method != "POST" {
 		w.WriteHeader(http.StatusMethodNotAllowed)
-		fmt.Fprintf(w, "Method ", r.Method, "Not Allowed")
+		fmt.Fprintf(w, "Method: %s Not Allowed", r.Method)
 		return
 	}
 
@@ -58,9 +75,9 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 
 	userDB, err := mongoRepo.Find(user.Email)
 	if err != nil {
+		mongoRepo.Logger.Printf("Unable to find user error: %v", err)
 		w.WriteHeader(http.StatusNotFound)
 		fmt.Fprintf(w, "The user is not in the DB")
-		mongoRepo.Logger.Printf("Unable to find user error: %v", err)
 		return
 	}
 
@@ -73,9 +90,9 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 	//Creating token
 	tokenString, err := jwtser.Encode(user)
 	if err != nil {
+		log.Printf("Token Signing error: %v\n", err)
 		w.WriteHeader(http.StatusInternalServerError)
 		fmt.Fprintln(w, "Error while Signing Token!")
-		log.Printf("Token Signing error: %v\n", err)
 		return
 	}
 
@@ -100,6 +117,12 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func logoutHandler(w http.ResponseWriter, r *http.Request) {
+	defer func() {
+		if err, ok := recover().(error); ok {
+			w.WriteHeader(http.StatusInternalServerError)
+			fmt.Fprintf(w, "Error: %v", err)
+		}
+	}()
 	//this handler is maybe not needed
 	if _, ok := r.Header["Authorization"]; !ok {
 		w.WriteHeader(http.StatusForbidden)
