@@ -1,8 +1,8 @@
-.PHONY: all generate_vendor build
+.PHONY: all
 all: generate_vendor build clean
 
 .PHONY: up 
-up: generate_vendor compose clean
+up: generate_vendor compose
 
 compose:
 	@docker-compose up -d
@@ -22,8 +22,16 @@ down:
 ps:
 	@docker-compose ps
 
+ifdef OS
+	RM = del /Q
+else
+	RM = rm -rf
+endif
 
 .PHONY: clean
 clean:
-	@$(RM) -r vendor
+	@$(RM) vendor
+ifneq "$(shell docker images -f dangling=true -q --no-trunc)" ""
 	@docker rmi $(shell docker images -f dangling=true -q --no-trunc)
+endif
+
