@@ -1,5 +1,5 @@
 .PHONY: all generate_vendor build
-all: generate_vendor build clean
+all: generate_vendor build
 
 .PHONY: up 
 up: generate_vendor compose clean
