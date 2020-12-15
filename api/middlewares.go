@@ -1,6 +1,7 @@
 package api
 
 import (
+	"fmt"
 	"net/http"
 	"regexp"
 )
@@ -23,6 +24,13 @@ func (m *Middleware) allowedOrigin(origin string) bool {
 // cors manage CORS preflight
 func cors(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		defer func() {
+			if err, ok := recover().(error); ok {
+				w.WriteHeader(http.StatusInternalServerError)
+				fmt.Fprintf(w, "Error inside cors middleware: %v", err)
+			}
+		}()
+
 		if r.Method == "OPTIONS" {
 			// in advance we need to change this for the appopiate OriginRule rule
 			m := Middleware{OriginRule: "*"}

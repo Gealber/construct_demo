@@ -5,7 +5,7 @@ all: generate_vendor build clean
 up: generate_vendor compose clean
 
 compose:
-	@docker-compose up
+	@docker-compose up -d
 
 .PHONY: generate_vendor
 generate_vendor: ; @go mod vendor
