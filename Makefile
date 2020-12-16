@@ -34,4 +34,3 @@ clean:
 ifneq "$(shell docker images -f dangling=true -q --no-trunc)" ""
 	@docker rmi $(shell docker images -f dangling=true -q --no-trunc)
 endif
-

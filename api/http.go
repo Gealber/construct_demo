@@ -1,10 +1,11 @@
 package api
 
 import (
+	"net/http"
+
 	"github.com/codegangsta/negroni"
 	"github.com/gorilla/mux"
 	"github.com/unrolled/render"
-	"net/http"
 )
 
 //NewServer configure and returns a Server

@@ -1,5 +1,6 @@
 serializer/jwt/key_backup/*
 go.sum
+vendor/
 script/config/dump.rb
 script/config/appendonly.aof
 
