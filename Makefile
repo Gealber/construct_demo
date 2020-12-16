@@ -22,15 +22,14 @@ down:
 ps:
 	@docker-compose ps
 
-ifdef OS
-	RM = del /Q
-else
-	RM = rm -rf
-endif
-
 .PHONY: clean
 clean:
-	@$(RM) vendor
+ifdef OS
+	del /Q vendor
+else
+	@rm -rf vendor
+endif
+
 ifneq "$(shell docker images -f dangling=true -q --no-trunc)" ""
 	@docker rmi $(shell docker images -f dangling=true -q --no-trunc)
 endif

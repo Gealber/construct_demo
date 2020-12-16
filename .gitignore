@@ -1,5 +1,7 @@
 serializer/jwt/key_backup/*
 go.sum
+make.exe
+mingw32-make.ex
 vendor/
 script/config/dump.rb
 script/config/appendonly.aof
